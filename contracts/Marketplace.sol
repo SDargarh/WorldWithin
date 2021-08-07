@@ -20,7 +20,7 @@ contract Marketplace{
     WWToken public WWtokenInstance;
     WWNFTToken public WWNFTTokenInstance;
 
-    constructor(address _tokenAddress, address _nftAddress) public {
+    constructor(address _tokenAddress, address _nftAddress) {
         WWtokenInstance = WWToken(_tokenAddress);
         WWNFTTokenInstance = WWNFTToken(_nftAddress);
     }
@@ -64,7 +64,7 @@ contract Marketplace{
 
         require(
         _payment == _priceInWW.add(marketOwnerRate), 
-        "payment sent is not correct, it should be " + _priceInWW.add(marketOwnerRate)
+        "payment sent is not correct"
         );
 
         //must be approved
