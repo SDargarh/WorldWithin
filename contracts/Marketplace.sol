@@ -25,8 +25,11 @@ contract Marketplace{
         WWNFTTokenInstance = WWNFTToken(_nftAddress);
     }
     
+    function mintToken() public {
+        uint newItemId = WWNFTTokenInstance.mintForUser(msg.sender);
+    }
 
-    function transferCutToOwner(uint _price) public {
+    function transferCutToOwner(uint _price) internal {
         
         //payment to Market place owner to put up the sale request
         //2% of the Item price
