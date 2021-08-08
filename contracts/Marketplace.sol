@@ -16,17 +16,20 @@ contract Marketplace{
 
     //stores the items put up for sale by users againt assetID/TokenID
     mapping(uint => ItemsDetails) public ItemsForSale;
+    // mapping(address => uint) public mintedTokenByUser;
     
-    WWToken public WWtokenInstance;
-    WWNFTToken public WWNFTTokenInstance;
+    WWToken wwToken;
+    WWNFTToken wwNftToken;
 
     constructor(address _tokenAddress, address _nftAddress) {
-        WWtokenInstance = WWToken(_tokenAddress);
-        WWNFTTokenInstance = WWNFTToken(_nftAddress);
+        wwToken = WWToken(_tokenAddress);
+        wwNftToken = WWNFTToken(_nftAddress);
     }
     
-    function mintToken() public {
-        uint newItemId = WWNFTTokenInstance.mintForUser(msg.sender);
+    function mintToken() public returns(uint){
+        uint newItemId = wwNftToken.mintForUser(msg.sender);
+        return newItemId;
+        // mintedTokenByUser[msg.sender] = newItemId;
     }
 
     function transferCutToOwner(uint _price) internal {
@@ -38,7 +41,7 @@ contract Marketplace{
 
         //must be approved 
         require(
-        WWtokenInstance.transferFrom(msg.sender, address(this), marketOwnerRate),
+        wwToken.transferFrom(msg.sender, address(this), marketOwnerRate),
         "Transfering the cut to the Marketplace owner failed"
         );
 
@@ -69,17 +72,17 @@ contract Marketplace{
 
         //must be approved
         require(
-        WWtokenInstance.transferFrom(msg.sender, address(this), marketOwnerRate),
+        wwToken.transferFrom(msg.sender, address(this), marketOwnerRate),
         "Transfering the cut to the Marketplace owner failed"
         );
 
         require(
-        WWtokenInstance.transferFrom(msg.sender, _seller, _payment.sub(marketOwnerRate)),
+        wwToken.transferFrom(msg.sender, _seller, _payment.sub(marketOwnerRate)),
         "Transfering the sale amount to the seller failed"
         );
         
         // Transfer asset owner
-        WWNFTTokenInstance.safeTransferFrom(_seller, msg.sender, _assetId);
+        wwNftToken.safeTransferFrom(_seller, msg.sender, _assetId);
 
         //remove the asset from the ItemsForSale
         ItemsForSale[_assetId].seller = address(0);
